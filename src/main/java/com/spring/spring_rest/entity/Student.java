@@ -13,7 +13,7 @@ public class Student {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column (name = "first_name", nullable = false)
     private String firstName;
@@ -32,6 +32,11 @@ public class Student {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public Student(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getFirstName() {
