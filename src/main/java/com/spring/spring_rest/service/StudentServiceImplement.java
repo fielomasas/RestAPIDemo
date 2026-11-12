@@ -1,7 +1,5 @@
 package com.spring.spring_rest.service;
 
-import com.spring.spring_rest.controller.DemoRestController;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
