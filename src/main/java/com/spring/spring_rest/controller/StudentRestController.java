@@ -3,18 +3,13 @@ package com.spring.spring_rest.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.spring_rest.dto.StudentDto;
-import com.spring.spring_rest.entity.Student;
-import com.spring.spring_rest.exception.StudentNotFoundException;
 import com.spring.spring_rest.service.StudentService;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,21 +19,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
+/**
+ * Exposes REST endpoints for managing students.
+ */
 @RestController 
 @RequestMapping("/api/students")
 public class StudentRestController {
 
     private StudentService studentService;
 
+    /**
+     * Creates the controller with its student service dependency.
+     *
+     * @param studentService service used to perform student operations
+     */
     public StudentRestController(StudentService studentService) {
         this.studentService = studentService;
     }
 
-    // Add Students REST API
+    /**
+     * Creates a student from the submitted request body.
+     *
+     * @param theStudentDto student data to create
+     * @return the created student with an HTTP 201 response
+     */
     @PostMapping
     public ResponseEntity<StudentDto> createStudent(@Valid 
                             @RequestBody StudentDto theStudentDto) {
@@ -46,21 +53,36 @@ public class StudentRestController {
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    // Get Student By Id REST API
+    /**
+     * Retrieves a student by ID.
+     *
+     * @param id ID of the student to retrieve
+     * @return the requested student
+     */
     @GetMapping("{id}")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id) {
         StudentDto studentDto = studentService.getStudentById(id);
         return ResponseEntity.ok(studentDto);
     }
 
-    // Get All Students REST API
+    /**
+     * Retrieves all students.
+     *
+     * @return the list of students
+     */
     @GetMapping
     public ResponseEntity<List<StudentDto>> getAllStudents() {
         List<StudentDto> students = studentService.getAllStudent();
         return ResponseEntity.ok(students); 
     }
     
-    // Update Student REST API
+    /**
+     * Replaces a student's data with the submitted request body.
+     *
+     * @param id ID of the student to update
+     * @param theStudentDto replacement student data
+     * @return the updated student
+     */
     @PutMapping("{id}")
     public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id,
         @Valid @RequestBody StudentDto theStudentDto
@@ -69,7 +91,13 @@ public class StudentRestController {
         return ResponseEntity.ok(studentDto);
     }
 
-    // Patch Student REST API
+    /**
+     * Partially updates a student's data with the submitted request body.
+     *
+     * @param id ID of the student to update
+     * @param theStudentDto student fields to update
+     * @return the updated student
+     */
     @PatchMapping("{id}")
     public ResponseEntity<StudentDto> patchStudent(@PathVariable Long id,
         @Valid @RequestBody StudentDto theStudentDto
@@ -78,38 +106,16 @@ public class StudentRestController {
         return ResponseEntity.ok(studentDto);
     }
 
-    // Delete Student REST API
+    /**
+     * Deletes a student by ID.
+     *
+     * @param id ID of the student to delete
+     * @return a success message
+     */
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteStudentById(@PathVariable Long id) {
         studentService.deleteStudentById(id);
         return ResponseEntity.ok("Student deleted successfully!");
     }
 
-    // Old Implementation (Disregard)
-    // private List<Student> theStudents;
-
-    // @PostConstruct
-    // public void initialize() {
-    //     theStudents = new ArrayList<>();
-
-    //     theStudents.add(new Student("Light", "Yagami"));
-    //     theStudents.add(new Student("Leslie", "Andrews"));
-    //     theStudents.add(new Student("Fiel", "Omas-as"));
-    // }
-
-    // @GetMapping("/students")
-    // public List<Student> getStudents() {
-    //     return theStudents;
-    // }
-
-    // @GetMapping("/students/{studentId}")
-    // public Student getsStudent(@PathVariable int studentId) {
-
-    //     if (studentId >= theStudents.size() || (studentId < 0)) {
-    //         throw new StudentNotFoundException(
-    //             "Student id " + studentId + " not found"
-    //         );
-    //     }
-    //     return theStudents.get(studentId);
-    // }
 }

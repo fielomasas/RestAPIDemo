@@ -1,9 +1,6 @@
 package com.spring.spring_rest.service;
 
-import com.spring.spring_rest.controller.DemoRestController;
-
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -11,24 +8,29 @@ import org.springframework.stereotype.Service;
 import com.spring.spring_rest.dto.StudentDto;
 import com.spring.spring_rest.mapper.StudentMapper;
 import com.spring.spring_rest.repository.StudentRepository;
-
-import io.micrometer.observation.annotation.ObservationKeyValue;
-import io.micrometer.observation.annotation.Observed;
-
 import com.spring.spring_rest.entity.Student;
 import com.spring.spring_rest.exception.StudentNotFoundException;
 
+/**
+ * Implements student operations using the student repository.
+ */
 @Service
 public class StudentServiceImplement implements StudentService{
-    
-    private final DemoRestController demoRestController;
+
     private StudentRepository studentRepo;
 
-    public StudentServiceImplement(StudentRepository studentRepo, DemoRestController demoRestController) {
+    /**
+     * Creates the service with its student repository dependency.
+     *
+     * @param studentRepo repository used to access student records
+     */
+    public StudentServiceImplement(StudentRepository studentRepo) {
         this.studentRepo = studentRepo;
-        this.demoRestController = demoRestController;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override 
     public StudentDto createStudent(StudentDto theStudentDto) {
         Student theStudent = StudentMapper.mapToStudent(theStudentDto);
@@ -37,6 +39,9 @@ public class StudentServiceImplement implements StudentService{
         return StudentMapper.mapToStudentDto(saved);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override 
     public StudentDto getStudentById(Long theId) {
         Student student = studentRepo.findById(theId)
@@ -48,6 +53,9 @@ public class StudentServiceImplement implements StudentService{
         return StudentMapper.mapToStudentDto(student);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override 
     public List<StudentDto> getAllStudent() {
         List<Student> students = studentRepo.findAll();
@@ -56,6 +64,9 @@ public class StudentServiceImplement implements StudentService{
         ).collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override 
     public StudentDto updateStudent(Long id, StudentDto studentDto) {
         Student student = studentRepo.findById(id)
@@ -71,6 +82,9 @@ public class StudentServiceImplement implements StudentService{
         return StudentMapper.mapToStudentDto(saved);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override 
     public StudentDto patchStudent(Long theId, StudentDto theStudentDto) {
         Student student = studentRepo.findById(theId)
@@ -92,6 +106,9 @@ public class StudentServiceImplement implements StudentService{
         return StudentMapper.mapToStudentDto(saved);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override 
     public void deleteStudentById(Long theId) {
         studentRepo.findById(theId)
