@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 /**
  * Exposes REST endpoints for managing students.
  */
@@ -87,7 +85,8 @@ public class StudentRestController {
     public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id,
         @Valid @RequestBody StudentDto theStudentDto
     ) {
-        StudentDto studentDto = studentService.updateStudent(id, theStudentDto);
+        StudentDto studentDto = studentService.updateStudent(id, 
+            theStudentDto);
         return ResponseEntity.ok(studentDto);
     }
 

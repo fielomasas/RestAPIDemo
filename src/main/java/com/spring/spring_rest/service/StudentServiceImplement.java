@@ -75,7 +75,7 @@ public class StudentServiceImplement implements StudentService{
             ));
         
         student.setFirstName(studentDto.getFirstName());
-        student.setLastName(student.getLastName());
+        student.setLastName(studentDto.getLastName());
         student.setEmail(studentDto.getEmail());
 
         Student saved = studentRepo.save(student);
