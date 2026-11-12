@@ -3,7 +3,6 @@ package com.spring.spring_rest.service;
 import com.spring.spring_rest.controller.DemoRestController;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -12,25 +11,27 @@ import com.spring.spring_rest.dto.StudentDto;
 import com.spring.spring_rest.mapper.StudentMapper;
 import com.spring.spring_rest.repository.StudentRepository;
 
-import io.micrometer.observation.annotation.ObservationKeyValue;
-import io.micrometer.observation.annotation.Observed;
-
 import com.spring.spring_rest.entity.Student;
+import com.spring.spring_rest.exception.AlreadyExistingEmailException;
 import com.spring.spring_rest.exception.StudentNotFoundException;
 
 @Service
 public class StudentServiceImplement implements StudentService{
     
-    private final DemoRestController demoRestController;
     private StudentRepository studentRepo;
 
-    public StudentServiceImplement(StudentRepository studentRepo, DemoRestController demoRestController) {
+    public StudentServiceImplement(StudentRepository studentRepo) {
         this.studentRepo = studentRepo;
-        this.demoRestController = demoRestController;
     }
 
     @Override 
     public StudentDto createStudent(StudentDto theStudentDto) {
+        if(studentRepo.existsByEmail(theStudentDto.getEmail())) {
+            throw new AlreadyExistingEmailException(
+                "Email already exists."
+            );
+        }
+
         Student theStudent = StudentMapper.mapToStudent(theStudentDto);
         Student saved = studentRepo.save(theStudent);
 
@@ -63,6 +64,12 @@ public class StudentServiceImplement implements StudentService{
                 "Student id " + id + " not found!"
             ));
         
+        if (studentRepo.existsByEmailAndIdNot(studentDto.getEmail(), id)) {
+            throw new AlreadyExistingEmailException(
+                "Email already exists."
+            );
+        }
+        
         student.setFirstName(studentDto.getFirstName());
         student.setLastName(student.getLastName());
         student.setEmail(studentDto.getEmail());
@@ -78,6 +85,8 @@ public class StudentServiceImplement implements StudentService{
                 "Student id " + theId + " not found!"
             ));
         
+        
+        
         if(theStudentDto.getFirstName() != null) {
             student.setFirstName(theStudentDto.getFirstName());
         }
@@ -85,6 +94,12 @@ public class StudentServiceImplement implements StudentService{
             student.setLastName(theStudentDto.getLastName());
         }
         if(theStudentDto.getEmail() != null) {
+            if (studentRepo.existsByEmailAndIdNot(theStudentDto.getEmail(), theId)) {
+                throw new AlreadyExistingEmailException(
+                    "Email already exists."
+                );
+            }
+
             student.setEmail(theStudentDto.getEmail());
         }
 

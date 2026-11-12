@@ -14,7 +14,10 @@ public class StudentDto {
     @Size (message = "Emails is required and should be valid.")
     private String email;
 
-    public StudentDto(Long id, String firstName, String lastName, String email) {
+    public StudentDto(Long id, 
+                        String firstName, 
+                        String lastName, 
+                        String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,6 +55,5 @@ public class StudentDto {
     public void setEmail(String email) {
         this.email = email;
     }
-    
     
 }

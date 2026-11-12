@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.spring.spring_rest.entity.StudentErrorResponse;
+import com.spring.spring_rest.exception.AlreadyExistingEmailException;
 import com.spring.spring_rest.exception.StudentNotFoundException;
 
 import java.util.Map;
@@ -49,5 +50,17 @@ public class StudentExceptionHandler {
             err.put(error.getField(), error.getDefaultMessage());
         });
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AlreadyExistingEmailException.class)
+    public ResponseEntity<StudentErrorResponse> handleExistingEmail(
+            AlreadyExistingEmailException ex) {
+
+        StudentErrorResponse err = new StudentErrorResponse();
+        err.setStatus(HttpStatus.CONFLICT.value());
+        err.setMessage(ex.getMessage());
+        err.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
 }
