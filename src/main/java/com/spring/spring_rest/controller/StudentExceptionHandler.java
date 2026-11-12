@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.spring.spring_rest.entity.StudentErrorResponse;
+import com.spring.spring_rest.exception.AlreadyExistingEmailException;
 import com.spring.spring_rest.exception.StudentNotFoundException;
 
 import java.util.Map;
@@ -38,7 +39,8 @@ public class StudentExceptionHandler {
     }
 
     /**
-     * Builds a bad-request response for an otherwise unhandled exception.
+     * Builds a bad-request response for an exception 
+     * without a specific handler.
      *
      * @param ex exception raised while handling the request
      * @return the error response with HTTP 400 status
@@ -69,5 +71,23 @@ public class StudentExceptionHandler {
             err.put(error.getField(), error.getDefaultMessage());
         });
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Builds a conflict response for a duplicate student email.
+     *
+     * @param ex exception describing the duplicate email
+     * @return the error response with HTTP 409 status
+     */
+    @ExceptionHandler(AlreadyExistingEmailException.class)
+    public ResponseEntity<StudentErrorResponse> handleExistingEmail(
+            AlreadyExistingEmailException ex) {
+
+        StudentErrorResponse err = new StudentErrorResponse();
+        err.setStatus(HttpStatus.CONFLICT.value());
+        err.setMessage(ex.getMessage());
+        err.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
 }
