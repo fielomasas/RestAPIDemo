@@ -2,11 +2,15 @@ package com.spring.spring_rest.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.spring.spring_rest.entity.StudentErrorResponse;
 import com.spring.spring_rest.exception.StudentNotFoundException;
+
+import java.util.Map;
+import java. util.HashMap;
 
 @ControllerAdvice 
 public class StudentExceptionHandler {
@@ -32,6 +36,18 @@ public class StudentExceptionHandler {
         err.setMessage("Invalid data. Only integers are accepted.");
         err.setTimeStamp(System.currentTimeMillis());
 
+        return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions (
+        MethodArgumentNotValidException ex) {
+        Map<String, String> err = new HashMap<>();
+
+        // Extract every field error and its custom message
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            err.put(error.getField(), error.getDefaultMessage());
+        });
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
 }
